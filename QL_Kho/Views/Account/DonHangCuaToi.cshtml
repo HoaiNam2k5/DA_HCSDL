@@ -1,0 +1,247 @@
+﻿@model IEnumerable<QL_Kho.Models.DONHANG>
+
+@{
+    ViewBag.Title = "Đơn hàng của tôi";
+}
+
+<!-- Breadcrumb -->
+<div class="container-fluid bg-light py-3 mb-4">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")"><i class="fas fa-home"></i> Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("ThongTinCaNhan", "Account")"><i class="fas fa-user"></i> Tài khoản</a></li>
+                <li class="breadcrumb-item active"><i class="fas fa-list"></i> Đơn hàng</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="user-info text-center mb-4">
+                        <div class="user-avatar mb-3">
+                            <i class="fas fa-user-circle fa-5x text-primary"></i>
+                        </div>
+                        <h5 class="mb-1">@Session["UserName"]</h5>
+                        <small class="text-muted">@Session["UserEmail"]</small>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="@Url.Action("ThongTinCaNhan", "Account")" class="list-group-item list-group-item-action">
+                            <i class="fas fa-user"></i> Thông tin cá nhân
+                        </a>
+                        <a href="@Url.Action("DonHangCuaToi", "Account")" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-list"></i> Đơn hàng của tôi
+                        </a>
+                        <a href="@Url.Action("DoiMatKhau", "Account")" class="list-group-item list-group-item-action">
+                            <i class="fas fa-key"></i> Đổi mật khẩu
+                        </a>
+                        <a href="@Url.Action("Logout", "Account")" class="list-group-item list-group-item-action text-danger">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders List -->
+        <div class="col-lg-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-gradient text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list"></i> Đơn hàng của tôi
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Filter Tabs -->
+                    <ul class="nav nav-pills mb-4" id="orderTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#all">
+                                Tất cả
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pending">
+                                Chờ xác nhận
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#confirmed">
+                                Đã xác nhận
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#shipping">
+                                Đang giao
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#completed">
+                                Đã giao
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#cancelled">
+                                Đã hủy
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Orders -->
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="orders-list">
+                            @foreach (var order in Model)
+                            {
+                                <div class="order-card card mb-3">
+                                    <div class="card-header">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-8">
+                                                <h6 class="mb-1">
+                                                    <i class="fas fa-receipt text-primary"></i>
+                                                    Đơn hàng: <strong>@order.MaDH</strong>
+                                                </h6>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-calendar"></i> @order.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                                                </small>
+                                            </div>
+                                            <div class="col-md-4 text-end">
+                                                @{
+                                                    var badgeClass = "secondary";
+                                                    switch (order.TrangThai)
+                                                    {
+                                                        case "Chờ xác nhận": badgeClass = "warning"; break;
+                                                        case "Đã xác nhận": badgeClass = "info"; break;
+                                                        case "Đang giao": badgeClass = "primary"; break;
+                                                        case "Đã giao": badgeClass = "success"; break;
+                                                        case "Đã hủy": badgeClass = "danger"; break;
+                                                    }
+                                                }
+                                                <span class="badge bg-@badgeClass">@order.TrangThai</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <p class="mb-1">
+                                                    <i class="fas fa-map-marker-alt text-danger"></i>
+                                                    <strong>Địa chỉ:</strong> @order.DiaChiGiao
+                                                </p>
+                                                <p class="mb-1">
+                                                    <i class="fas fa-phone text-success"></i>
+                                                    <strong>SĐT:</strong> @order.SDT
+                                                </p>
+                                                <p class="mb-0">
+                                                    <i class="fas fa-credit-card text-info"></i>
+                                                    <strong>Thanh toán:</strong> @order.PhuongThucTT
+                                                </p>
+                                            </div>
+                                            <div class="col-md-4 text-end">
+                                                <h4 class="text-danger mb-3">@string.Format("{0:N0}đ", order.TongTien)</h4>
+                                                <a href="@Url.Action("ChiTietDonHang", "Account", new { id = order.MaDH.Trim() })" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-eye"></i> Chi tiết
+                                                </a>
+                                                @if (order.TrangThai == "Chờ xác nhận")
+                                                {
+                                                    <button class="btn btn-outline-danger btn-sm" onclick="cancelOrder('@order.MaDH')">
+                                                        <i class="fas fa-times"></i> Hủy
+                                                    </button>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-orders text-center py-5">
+                            <i class="fas fa-box-open fa-5x text-muted mb-3"></i>
+                            <h4>Chưa có đơn hàng nào</h4>
+                            <p class="text-muted">Bạn chưa có đơn hàng nào. Hãy bắt đầu mua sắm ngay!</p>
+                            <a href="@Url.Action("SanPham", "Home")" class="btn btn-primary">
+                                <i class="fas fa-shopping-bag"></i> Mua sắm ngay
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <style>
+        .bg-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .list-group-item.active {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        .order-card {
+            transition: all 0.3s ease;
+        }
+
+            .order-card:hover {
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+            }
+
+        .nav-pills .nav-link {
+            color: #667eea;
+            border: 1px solid #e3e6f0;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+            .nav-pills .nav-link.active {
+                background-color: #667eea;
+                color: white;
+            }
+    </style>
+}
+
+@section scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function cancelOrder(maDH) {
+            Swal.fire({
+                title: 'Hủy đơn hàng?',
+                text: "Bạn có chắc muốn hủy đơn hàng này?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74a3b',
+                cancelButtonColor: '#858796',
+                confirmButtonText: 'Hủy đơn',
+                cancelButtonText: 'Đóng'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // AJAX cancel order
+                    Swal.fire(
+                        'Đã hủy!',
+                        'Đơn hàng đã được hủy.',
+                        'success'
+                    );
+                }
+            });
+        }
+    </script>
+}

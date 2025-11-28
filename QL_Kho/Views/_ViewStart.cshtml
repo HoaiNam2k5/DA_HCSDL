@@ -1,0 +1,11 @@
+﻿@{
+    if (ViewContext.RouteData.Values["Controller"].ToString() == "Admin" ||
+        ViewContext.RouteData.Values["Controller"].ToString() == "Report")
+    {
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}

@@ -1,0 +1,297 @@
+﻿@{
+    ViewBag.Title = "Admin Portal";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-welcome">
+    <!-- Welcome Banner -->
+    <div class="card shadow mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+        <div class="card-body text-white p-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 mb-3">
+                        <i class="fas fa-crown"></i> Chào mừng, @Session["UserName"]!
+                    </h1>
+                    <p class="lead mb-4">
+                        Chào mừng đến với trang quản trị hệ thống. Bạn có thể quản lý toàn bộ cửa hàng từ đây.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="@Url.Action("Dashboard", "Admin")" class="btn btn-light btn-lg">
+                            <i class="fas fa-tachometer-alt"></i> Vào Dashboard
+                        </a>
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-home"></i> Xem Website
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center d-none d-lg-block">
+                    <i class="fas fa-user-shield" style="font-size: 150px; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card quick-stat-card shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="icon-wrapper mb-3 bg-primary-subtle">
+                        <i class="fas fa-shopping-cart fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="mb-1">@ViewBag.TongDonHang</h3>
+                    <p class="text-muted mb-0">Tổng đơn hàng</p>
+                    @if (ViewBag.DonHangMoi > 0)
+                    {
+                        <span class="badge bg-success mt-2">+@ViewBag.DonHangMoi mới hôm nay</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card quick-stat-card shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="icon-wrapper mb-3 bg-success-subtle">
+                        <i class="fas fa-box fa-3x text-success"></i>
+                    </div>
+                    <h3 class="mb-1">@ViewBag.TongSanPham</h3>
+                    <p class="text-muted mb-0">Sản phẩm</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card quick-stat-card shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="icon-wrapper mb-3 bg-info-subtle">
+                        <i class="fas fa-users fa-3x text-info"></i>
+                    </div>
+                    <h3 class="mb-1">@ViewBag.TongNguoiDung</h3>
+                    <p class="text-muted mb-0">Người dùng</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card quick-stat-card shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <div class="icon-wrapper mb-3 bg-warning-subtle">
+                        <i class="fas fa-clock fa-3x text-warning"></i>
+                    </div>
+                    <h3 class="mb-1">@DateTime.Now.ToString("HH:mm")</h3>
+                    <p class="text-muted mb-0">@DateTime.Now.ToString("dd/MM/yyyy")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">
+                <i class="fas fa-bolt text-warning"></i> Thao tác nhanh
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-lg-3 col-md-6">
+                    <a href="@Url.Action("QuanLyDonHang", "Admin")" class="quick-action-card">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <i class="fas fa-shopping-cart fa-3x text-primary mb-3"></i>
+                                <h6 class="mb-0">Quản lý đơn hàng</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <a href="@Url.Action("QuanLySanPham", "Admin")" class="quick-action-card">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <i class="fas fa-box fa-3x text-success mb-3"></i>
+                                <h6 class="mb-0">Quản lý sản phẩm</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <a href="@Url.Action("QuanLyNguoiDung", "Admin")" class="quick-action-card">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <i class="fas fa-users fa-3x text-info mb-3"></i>
+                                <h6 class="mb-0">Quản lý người dùng</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <a href="@Url.Action("Dashboard", "Admin")" class="quick-action-card">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <i class="fas fa-chart-bar fa-3x text-warning mb-3"></i>
+                                <h6 class="mb-0">Xem báo cáo</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Info -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle text-info"></i> Thông tin hệ thống
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless mb-0">
+                        <tr>
+                            <td><i class="fas fa-server text-primary me-2"></i> Phiên bản:</td>
+                            <td><strong>1.0.0</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-calendar text-success me-2"></i> Ngày triển khai:</td>
+                            <td><strong>@DateTime.Now.ToString("dd/MM/yyyy")</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-code text-info me-2"></i> Framework:</td>
+                            <td><strong>ASP.NET MVC 5</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-database text-warning me-2"></i> Database:</td>
+                            <td><strong>SQL Server</strong></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-book text-success"></i> Tài liệu hướng dẫn
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-3">
+                            <a href="#" class="text-decoration-none">
+                                <i class="fas fa-file-pdf text-danger me-2"></i>
+                                Hướng dẫn quản lý đơn hàng
+                            </a>
+                        </li>
+                        <li class="mb-3">
+                            <a href="#" class="text-decoration-none">
+                                <i class="fas fa-file-pdf text-danger me-2"></i>
+                                Hướng dẫn quản lý sản phẩm
+                            </a>
+                        </li>
+                        <li class="mb-3">
+                            <a href="#" class="text-decoration-none">
+                                <i class="fas fa-file-pdf text-danger me-2"></i>
+                                Hướng dẫn xem báo cáo
+                            </a>
+                        </li>
+                        <li class="mb-0">
+                            <a href="#" class="text-decoration-none">
+                                <i class="fas fa-question-circle text-info me-2"></i>
+                                Câu hỏi thường gặp (FAQ)
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <style>
+        .admin-welcome h1 {
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .quick-stat-card {
+            transition: all 0.3s ease;
+        }
+
+            .quick-stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important;
+            }
+
+        .icon-wrapper {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .quick-action-card {
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+            .quick-action-card:hover .card {
+                transform: translateY(-10px);
+                box-shadow: 0 1rem 2rem rgba(0,0,0,0.15) !important;
+            }
+
+            .quick-action-card .card-body {
+                transition: all 0.3s ease;
+            }
+
+            .quick-action-card:hover .card-body {
+                background: linear-gradient(135deg, #f8f9fc 0%, #e3e6f0 100%);
+            }
+
+        .bg-primary-subtle {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+
+        .bg-success-subtle {
+            background-color: rgba(28, 200, 138, 0.1);
+        }
+
+        .bg-info-subtle {
+            background-color: rgba(54, 185, 204, 0.1);
+        }
+
+        .bg-warning-subtle {
+            background-color: rgba(246, 194, 62, 0.1);
+        }
+    </style>
+}
+
+@section scripts {
+    <script>
+        // Welcome animation
+        $(document).ready(function() {
+            $('. admin-welcome').hide(). fadeIn(800);
+        });
+
+        // Real-time clock
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now. getMinutes()).padStart(2, '0');
+            $('. quick-stat-card h3:contains(":")').text(hours + ':' + minutes);
+        }
+
+        setInterval(updateClock, 60000);
+    </script>
+}

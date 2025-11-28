@@ -1,0 +1,560 @@
+﻿@model IEnumerable<QL_Kho.Models.SANPHAM>
+
+@{
+    ViewBag.Title = "Sản phẩm";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Sản phẩm</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Sidebar Filter -->
+    <div class="col-lg-3 mb-4">
+        <div class="filter-sidebar">
+            <!-- Categories -->
+            <div class="filter-section mb-4">
+                <h5 class="filter-title">
+                    <i class="fas fa-th-large"></i> Danh mục
+                </h5>
+                <div class="list-group">
+                    <a href="@Url.Action("SanPham", "Home")"
+                       class="list-group-item list-group-item-action @(string.IsNullOrEmpty(ViewBag.MaDanhMuc) ? "active" : "")">
+                        <i class="fas fa-list"></i> Tất cả sản phẩm
+                        <span class="badge bg-primary rounded-pill float-end">@Model.Count()</span>
+                    </a>
+                    @if (ViewBag.DanhMucList != null)
+                    {
+                        foreach (var dm in (List<QL_Kho.Models.DANHMUC>)ViewBag.DanhMucList)
+                        {
+                            <a href="@Url.Action("DanhMuc", "Home", new { id = dm.MaDM })"
+                               class="list-group-item list-group-item-action">
+                                @dm.TenDM
+                                <span class="badge bg-secondary rounded-pill float-end">
+                                    @Model.Count(s => s.MaDM == dm.MaDM)
+                                </span>
+                            </a>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- Price Range -->
+            <div class="filter-section mb-4">
+                <h5 class="filter-title">
+                    <i class="fas fa-dollar-sign"></i> Khoảng giá
+                </h5>
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action" onclick="filterByPrice(0, 5000000); return false;">
+                        Dưới 5 triệu
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action" onclick="filterByPrice(5000000, 10000000); return false;">
+                        5 - 10 triệu
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action" onclick="filterByPrice(10000000, 15000000); return false;">
+                        10 - 15 triệu
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action" onclick="filterByPrice(15000000, 20000000); return false;">
+                        15 - 20 triệu
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action" onclick="filterByPrice(20000000, 999999999); return false;">
+                        Trên 20 triệu
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stock Status -->
+            <div class="filter-section mb-4">
+                <h5 class="filter-title">
+                    <i class="fas fa-box"></i> Tình trạng
+                </h5>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="inStock" checked onchange="filterProducts()">
+                    <label class="form-check-label" for="inStock">
+                        Còn hàng
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="outStock" onchange="filterProducts()">
+                    <label class="form-check-label" for="outStock">
+                        Hết hàng
+                    </label>
+                </div>
+            </div>
+
+            <!-- Special Offers -->
+            <div class="special-banner p-3 text-center rounded">
+                <h5 class="text-white mb-3">🎁 Ưu đãi đặc biệt</h5>
+                <p class="text-white mb-3">Giảm giá lên đến 30%</p>
+                <a href="@Url.Action("DanhMuc", "Home", new { id = "DM001" })" class="btn btn-light btn-sm">
+                    Xem ngay
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="col-lg-9">
+        <!-- Toolbar -->
+        <div class="products-toolbar d-flex justify-content-between align-items-center mb-4">
+            <div class="toolbar-left">
+                <h4 class="mb-0">
+                    Tất cả sản phẩm
+                    <span class="badge bg-primary">@Model.Count() sản phẩm</span>
+                </h4>
+            </div>
+            <div class="toolbar-right d-flex gap-2">
+                <select class="form-select form-select-sm" id="sortBy" onchange="sortProducts()" style="width: 200px;">
+                    <option value="default">Mặc định</option>
+                    <option value="name-asc">Tên: A-Z</option>
+                    <option value="name-desc">Tên: Z-A</option>
+                    <option value="price-asc">Giá: Thấp đến Cao</option>
+                    <option value="price-desc">Giá: Cao đến Thấp</option>
+                    <option value="newest">Mới nhất</option>
+                </select>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-secondary btn-sm active" id="gridView" onclick="changeView('grid')">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" id="listView" onclick="changeView('list')">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products List -->
+        @if (Model != null && Model.Any())
+        {
+            <div class="row g-4" id="productsContainer">
+                @foreach (var item in Model)
+                {
+                    <div class="col-6 col-md-4 product-item"
+                         data-price="@item.DonGia"
+                         data-name="@item.TenSP"
+                         data-date="@(item.NgayTao?.ToString("yyyyMMdd") ?? "19700101")"
+                         data-stock="@(item.SoLuongTon > 0 ? "in" : "out")">
+                        <div class="card h-100 product-card shadow-sm">
+                            <!-- Product Image -->
+                            <a href="@Url.Action("ChiTiet", "Home", new { id = item.MaSP.Trim() })" class="product-image-link">
+                                @if (!string.IsNullOrEmpty(item.HinhAnh))
+                                {
+                                    <img src="~/Content/images/@item.HinhAnh"
+                                         class="card-img-top product-image"
+                                         alt="@item.TenSP"
+                                         onerror="this.src='https://via.placeholder.com/300x300/667eea/ffffff?text=No+Image'">
+                                }
+                                else
+                                {
+                                    <img src="https://via.placeholder.com/300x300/667eea/ffffff?text=@item.TenSP"
+                                         class="card-img-top product-image"
+                                         alt="@item.TenSP">
+                                }
+                            </a>
+
+                            <!-- Product Badge -->
+                            @if (item.SoLuongTon <= 0)
+                            {
+                                <span class="badge bg-danger product-badge">Hết hàng</span>
+                            }
+                            else if (item.SoLuongTon <= 10)
+                            {
+                                <span class="badge bg-warning product-badge">Sắp hết</span>
+                            }
+                            else if (item.NgayTao.HasValue && item.NgayTao >= DateTime.Now.AddDays(-7))
+                            {
+                                <span class="badge bg-success product-badge">Mới</span>
+                            }
+
+                            <!-- Quick View Icon -->
+                            <div class="quick-view">
+                                <a href="@Url.Action("ChiTiet", "Home", new { id = item.MaSP.Trim() })" class="btn btn-light btn-sm rounded-circle">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
+
+                            <!-- Product Info -->
+                            <div class="card-body d-flex flex-column">
+                                <h6 class="card-title product-name">
+                                    <a href="@Url.Action("ChiTiet", "Home", new { id = item.MaSP.Trim() })" class="text-decoration-none text-dark">
+                                        @item.TenSP
+                                    </a>
+                                </h6>
+
+                                <!-- Rating -->
+                                <div class="product-rating mb-2">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <small class="text-muted">(4.8)</small>
+                                </div>
+
+                                <!-- Price -->
+                                <div class="product-price mb-2">
+                                    <span class="h5 text-danger mb-0">
+                                        @string.Format("{0:N0}", item.DonGia) đ
+                                    </span>
+                                    <div class="text-muted text-decoration-line-through small">
+                                        @string.Format("{0:N0}", item.DonGia * 1.2m) đ
+                                    </div>
+                                </div>
+
+                                <!-- Stock Info -->
+                                <div class="stock-info mb-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-box"></i>
+                                        @if (item.SoLuongTon > 0)
+                                        {
+                                            <span class="text-success">Còn @item.SoLuongTon sản phẩm</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-danger">Hết hàng</span>
+                                        }
+                                    </small>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="mt-auto">
+                                    @if (item.SoLuongTon > 0)
+                                    {
+                                        <div class="d-grid gap-2">
+                                            <a href="@Url.Action("ChiTiet", "Home", new { id = item.MaSP.Trim() })"
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-eye"></i> Xem chi tiết
+                                            </a>
+                                            <button onclick="addToCart('@item.MaSP')" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                                            </button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-secondary btn-sm w-100" disabled>
+                                            <i class="fas fa-ban"></i> Hết hàng
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Products pagination" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Trước</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Sau</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+        else
+        {
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle fa-3x mb-3"></i>
+                <h4>Không tìm thấy sản phẩm nào</h4>
+                <p>Vui lòng thử lại với bộ lọc khác</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section styles {
+    <style>
+        /* Filter Sidebar */
+        .filter-sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            position: sticky;
+            top: 80px;
+        }
+
+        .filter-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .filter-section .list-group-item {
+            border: none;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-section .list-group-item:hover {
+            background-color: #f8f9fc;
+            padding-left: 1.5rem;
+        }
+
+        .filter-section .list-group-item.active {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .special-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-top: 2rem;
+            box-shadow: 0 0.5rem 1rem rgba(102, 126, 234, 0.3);
+        }
+
+        /* Products Toolbar */
+        .products-toolbar {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
+        /* Product Card */
+        .product-card {
+            position: relative;
+            transition: all 0.3s ease;
+            border: 1px solid #e3e6f0;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+        }
+
+        .product-image-link {
+            display: block;
+            overflow: hidden;
+        }
+
+        .product-image {
+            height: 250px;
+            object-fit: cover;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.1);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+            font-size: 0.75rem;
+            padding: 0.35rem 0.65rem;
+        }
+
+        .quick-view {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .product-card:hover .quick-view {
+            opacity: 1;
+        }
+
+        .product-name {
+            font-size: 1rem;
+            font-weight: 600;
+            min-height: 48px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-name a {
+            transition: color 0.3s ease;
+        }
+
+        .product-name a:hover {
+            color: #667eea !important;
+        }
+
+        .product-rating {
+            font-size: 0.875rem;
+        }
+
+        .product-price {
+            font-weight: 700;
+        }
+
+        /* List View */
+        .list-view .product-item {
+            width: 100%;
+            max-width: 100%;
+            flex: 0 0 100%;
+        }
+
+        .list-view .product-card {
+            flex-direction: row;
+        }
+
+        .list-view .product-image-link {
+            flex-shrink: 0;
+            width: 200px;
+        }
+
+        .list-view .product-image {
+            width: 200px;
+            height: 200px;
+        }
+
+        .list-view .card-body {
+            flex: 1;
+        }
+
+ 
+    </style>
+}
+
+@section scripts {
+    <script>
+        // Add to Cart
+        function addToCart(maSP) {
+            @if (Session["UserID"] == null)
+            {
+                <text>
+                if (confirm('Bạn cần đăng nhập để thêm vào giỏ hàng. Chuyển đến trang đăng nhập?')) {
+                    window.location.href = '@Url.Action("Login", "Account")';
+                }
+                return;
+                </text>
+            }
+
+            $.ajax({
+                url: '@Url.Action("AddToCart", "Cart")',
+                type: 'POST',
+                data: { maSP: maSP, soLuong: 1 },
+                success: function (response) {
+                    if (response.success) {
+                        $('.badge-notification').text(response.cartCount);
+                        showToast('Đã thêm vào giỏ hàng!', 'success');
+                    } else {
+                        showToast(response.message || 'Có lỗi xảy ra!', 'error');
+                    }
+                },
+                error: function () {
+                    showToast('Có lỗi xảy ra. Vui lòng thử lại!', 'error');
+                }
+            });
+        }
+
+        // Filter by Price
+        function filterByPrice(min, max) {
+            $('.product-item').each(function() {
+                var price = parseInt($(this).data('price'));
+                if (price >= min && price <= max) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+
+        // Filter Products
+        function filterProducts() {
+            var inStock = $('#inStock').is(':checked');
+            var outStock = $('#outStock').is(':checked');
+
+            $('.product-item').each(function() {
+                var stock = $(this).data('stock');
+                var show = false;
+
+                if (inStock && stock === 'in') show = true;
+                if (outStock && stock === 'out') show = true;
+                if (!inStock && !outStock) show = true;
+
+                $(this).toggle(show);
+            });
+        }
+
+        // Sort Products
+        function sortProducts() {
+            var sortBy = $('#sortBy').val();
+            var $container = $('#productsContainer');
+            var $items = $container.children('.product-item');
+
+            $items.sort(function(a, b) {
+                switch(sortBy) {
+                    case 'name-asc':
+                        return $(a).data('name').localeCompare($(b).data('name'));
+                    case 'name-desc':
+                        return $(b).data('name').localeCompare($(a).data('name'));
+                    case 'price-asc':
+                        return parseInt($(a).data('price')) - parseInt($(b).data('price'));
+                    case 'price-desc':
+                        return parseInt($(b).data('price')) - parseInt($(a).data('price'));
+                    case 'newest':
+                        return parseInt($(b).data('date')) - parseInt($(a).data('date'));
+                    default:
+                        return 0;
+                }
+            });
+
+            $container.html($items);
+        }
+
+        // Change View (Grid/List)
+        function changeView(view) {
+            var $container = $('#productsContainer');
+
+            if (view === 'list') {
+                $container.removeClass('row g-4').addClass('list-view');
+                $('#gridView').removeClass('active');
+                $('#listView').addClass('active');
+            } else {
+                $container.removeClass('list-view').addClass('row g-4');
+                $('#listView').removeClass('active');
+                $('#gridView').addClass('active');
+            }
+        }
+
+        // Toast Notification
+        function showToast(message, type) {
+            const bgColor = type === 'success' ? '#1cc88a' : '#e74a3b';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+
+            const toast = $(`
+                <div class="toast-message" style="position: fixed; top: 80px; right: 20px; z-index: 9999; background: ${bgColor}; color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15); animation: slideIn 0.3s ease;">
+                    <i class="fas ${icon} me-2"></i>${message}
+                </div>
+            `);
+
+            $('body').append(toast);
+
+            setTimeout(() => {
+                toast.fadeOut(300, function() {
+                    $(this).remove();
+                });
+            }, 3000);
+        }
+    </script>
+}

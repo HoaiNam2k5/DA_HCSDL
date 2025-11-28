@@ -1,0 +1,619 @@
+﻿@model IEnumerable<QL_Kho.Models.GIOHANG>
+
+@{
+    ViewBag.Title = "Thanh toán";
+}
+
+<!-- Breadcrumb -->
+<div class="container-fluid bg-light py-3 mb-4">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")"><i class="fas fa-home"></i> Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Cart")"><i class="fas fa-shopping-cart"></i> Giỏ hàng</a></li>
+                <li class="breadcrumb-item active"><i class="fas fa-credit-card"></i> Thanh toán</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <!-- Page Header -->
+    <div class="checkout-header text-center mb-5">
+        <h2 class="page-title">
+            <i class="fas fa-credit-card text-primary"></i>
+            Thanh toán đơn hàng
+        </h2>
+        <p class="text-muted">Hoàn tất đơn hàng của bạn</p>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="checkout-steps mb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="steps-container">
+                    <div class="step completed">
+                        <div class="step-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="step-title">Giỏ hàng</div>
+                    </div>
+                    <div class="step-line completed"></div>
+                    <div class="step active">
+                        <div class="step-icon">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div class="step-title">Thông tin</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="step-title">Hoàn tất</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form id="checkoutForm" method="post" action="@Url.Action("PlaceOrder", "Cart")">
+        @Html.AntiForgeryToken()
+
+        <div class="row g-4">
+            <!-- Left Column - Form -->
+            <div class="col-lg-7">
+                <!-- Customer Info -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-gradient text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-user"></i> Thông tin khách hàng
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="hoTen"
+                                       value="@ViewBag.User.TenNguoiDung" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email"
+                                       value="@ViewBag.User.Email" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    <input type="tel" class="form-control" id="sdt" name="sdt"
+                                           value="@ViewBag.User.SDT" required
+                                           placeholder="Nhập số điện thoại">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phương thức thanh toán <span class="text-danger">*</span></label>
+                                <select class="form-select" id="phuongThucTT" name="phuongThucTT" required>
+                                    <option value="COD" selected>COD (Thanh toán khi nhận hàng)</option>
+                                    <option value="Banking">Chuyển khoản ngân hàng</option>
+                                    <option value="Momo">Ví MoMo</option>
+                                    <option value="ZaloPay">ZaloPay</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping Info -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-gradient text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-shipping-fast"></i> Địa chỉ giao hàng
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="useSameAddress" checked>
+                            <label class="form-check-label" for="useSameAddress">
+                                Sử dụng địa chỉ đã đăng ký
+                            </label>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Địa chỉ chi tiết <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="diaChiGiao" name="diaChiGiao" rows="3"
+                                          required placeholder="Số nhà, tên đường, phường/xã...">@ViewBag.User.DiaChi</textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Tỉnh/Thành phố</label>
+                                <select class="form-select" id="city">
+                                    <option selected>TP. Hồ Chí Minh</option>
+                                    <option>Hà Nội</option>
+                                    <option>Đà Nẵng</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Quận/Huyện</label>
+                                <select class="form-select" id="district">
+                                    <option selected>Chọn quận/huyện</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Phường/Xã</label>
+                                <select class="form-select" id="ward">
+                                    <option selected>Chọn phường/xã</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Note -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0">
+                            <i class="fas fa-sticky-note"></i> Ghi chú đơn hàng (Tùy chọn)
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <textarea class="form-control" id="ghiChu" name="ghiChu" rows="3"
+                                  placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Order Summary -->
+            <div class="col-lg-5">
+                <div class="order-summary-sticky">
+                    <!-- Order Summary -->
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header bg-gradient text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-receipt"></i> Đơn hàng của bạn
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Products List -->
+                            <div class="order-products mb-3">
+                                @foreach (var item in Model)
+                                {
+                                    var sanPham = item.SANPHAM;
+                                    <div class="order-product-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="product-image-small me-3">
+                                                @if (!string.IsNullOrEmpty(sanPham.HinhAnh))
+                                                {
+                                                    if (sanPham.HinhAnh.StartsWith("http"))
+                                                    {
+                                                        <img src="@sanPham.HinhAnh" alt="@sanPham.TenSP">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/Content/images/@sanPham.HinhAnh" alt="@sanPham.TenSP">
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <img src="https://via.placeholder.com/60" alt="No image">
+                                                }
+                                                <span class="product-quantity-badge">@item.SoLuong</span>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="product-name mb-1">@sanPham.TenSP</h6>
+                                                <small class="text-muted">@item.SoLuong x @string.Format("{0:N0}đ", item.DonGia)</small>
+                                            </div>
+                                            <div class="product-total">
+                                                <strong class="text-primary">@string.Format("{0:N0}đ", item.SoLuong * item.DonGia)</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <hr>
+
+                            <!-- Summary Details -->
+                            <div class="summary-details">
+                                <div class="summary-row">
+                                    <span>Tạm tính</span>
+                                    <strong>@string.Format("{0:N0}đ", ViewBag.TongTien)</strong>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Phí vận chuyển</span>
+                                    <strong class="text-success">Miễn phí</strong>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Giảm giá</span>
+                                    <strong class="text-danger">0đ</strong>
+                                </div>
+                                <hr>
+                                <div class="summary-row summary-total">
+                                    <h5 class="mb-0">Tổng cộng</h5>
+                                    <h4 class="text-danger mb-0">@string.Format("{0:N0}đ", ViewBag.TongTien)</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body">
+                            <h6 class="mb-3">
+                                <i class="fas fa-wallet"></i> Phương thức thanh toán
+                            </h6>
+                            <div class="payment-methods-grid">
+                                <div class="payment-method active" data-method="COD">
+                                    <i class="fas fa-money-bill-wave fa-2x"></i>
+                                    <small>COD</small>
+                                </div>
+                                <div class="payment-method" data-method="Banking">
+                                    <i class="fas fa-university fa-2x"></i>
+                                    <small>Banking</small>
+                                </div>
+                                <div class="payment-method" data-method="Momo">
+                                    <i class="fas fa-mobile-alt fa-2x text-danger"></i>
+                                    <small>MoMo</small>
+                                </div>
+                                <div class="payment-method" data-method="ZaloPay">
+                                    <i class="fas fa-wallet fa-2x text-info"></i>
+                                    <small>ZaloPay</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms & Submit -->
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                                <label class="form-check-label small" for="agreeTerms">
+                                    Tôi đã đọc và đồng ý với
+                                    <a href="#" class="text-primary">Điều khoản và điều kiện</a>
+                                    của website
+                                </label>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg" id="btnPlaceOrder">
+                                    <i class="fas fa-check-circle"></i> Đặt hàng
+                                </button>
+                                <a href="@Url.Action("Index", "Cart")" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left"></i> Quay lại giỏ hàng
+                                </a>
+                            </div>
+
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-lock text-success"></i>
+                                    Thông tin của bạn được bảo mật
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section styles {
+    <style>
+        /* Page Header */
+        .checkout-header .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        /* Progress Steps */
+        .steps-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #e3e6f0;
+            color: #858796;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .step.completed .step-icon,
+        .step.active .step-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 0.5rem 1rem rgba(102, 126, 234, 0.3);
+        }
+
+        .step-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #858796;
+        }
+
+        .step.completed .step-title,
+        .step.active .step-title {
+            color: #667eea;
+        }
+
+        .step-line {
+            flex: 1;
+            height: 3px;
+            background: #e3e6f0;
+            margin: 0 1rem;
+            position: relative;
+            top: -20px;
+        }
+
+        .step-line.completed {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Card Headers */
+        .bg-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Form Styling */
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        /* Order Products */
+        .order-products {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .order-product-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #e3e6f0;
+        }
+
+        .order-product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-image-small {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .product-image-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-quantity-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74a3b;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .product-name {
+            font-size: 0.9rem;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Summary */
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            font-size: 0.95rem;
+        }
+
+        .summary-row:not(:last-child) {
+            border-bottom: 1px dashed #e3e6f0;
+        }
+
+        .summary-total {
+            background: linear-gradient(135deg, #f8f9fc 0%, #e3e6f0 100%);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        /* Payment Methods Grid */
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .payment-method {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border: 2px solid #e3e6f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: #667eea;
+            background: #f8f9fc;
+            transform: translateY(-3px);
+        }
+
+        .payment-method.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        .payment-method i {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-method small {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Sticky Summary */
+        .order-summary-sticky {
+            position: sticky;
+            top: 100px;
+        }
+
+        /* Loading */
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spinner 0.6s linear infinite;
+        }
+
+     
+    </style>
+}
+
+@section scripts {
+    <script>
+        $(document).ready(function() {
+            // Payment method selection
+            $('.payment-method').click(function() {
+                $('.payment-method').removeClass('active');
+                $(this).addClass('active');
+                var method = $(this).data('method');
+                $('#phuongThucTT').val(method);
+            });
+
+            // Use same address checkbox
+            $('#useSameAddress').change(function() {
+                if ($(this).is(':checked')) {
+                    $('#diaChiGiao').val('@ViewBag.User.DiaChi');
+                } else {
+                    $('#diaChiGiao').val('');
+                }
+            });
+
+            // Form submission
+            $('#checkoutForm').submit(function(e) {
+                e.preventDefault();
+
+                // Validate
+                if (!$('#agreeTerms').is(':checked')) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Thông báo',
+                        text: 'Vui lòng đồng ý với điều khoản và điều kiện'
+                    });
+                    return false;
+                }
+
+                // Show loading
+                var $btn = $('#btnPlaceOrder');
+                $btn.addClass('btn-loading').prop('disabled', true);
+                $btn.html('<span class="spinner-border spinner-border-sm me-2"></span>Đang xử lý...');
+
+                // Submit
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Đặt hàng thành công!',
+                                text: 'Mã đơn hàng: ' + response.maDH,
+                                confirmButtonText: 'Xem đơn hàng'
+                            }).then(() => {
+                                window.location.href = '@Url.Action("OrderSuccess", "Cart")' + '?maDH=' + response.maDH;
+                            });
+                        } else {
+                            $btn.removeClass('btn-loading').prop('disabled', false);
+                            $btn.html('<i class="fas fa-check-circle"></i> Đặt hàng');
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function() {
+                        $btn.removeClass('btn-loading').prop('disabled', false);
+                        $btn.html('<i class="fas fa-check-circle"></i> Đặt hàng');
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: 'Có lỗi xảy ra. Vui lòng thử lại!'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}

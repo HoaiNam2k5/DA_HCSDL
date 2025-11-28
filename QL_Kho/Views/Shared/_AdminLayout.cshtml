@@ -1,0 +1,406 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Admin Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* Admin Sidebar */
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+            .sidebar.collapsed {
+                width: 80px;
+            }
+
+        .sidebar-brand {
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .sidebar-brand .logo-icon {
+                width: 40px;
+                height: 40px;
+                background: white;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.3rem;
+                color: #2c3e50;
+                flex-shrink: 0;
+            }
+
+        .sidebar.collapsed .sidebar-brand span {
+            display: none;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+            .sidebar-menu li a {
+                display: flex;
+                align-items: center;
+                padding: 1rem 1.5rem;
+                color: rgba(255, 255, 255, 0.8);
+                text-decoration: none;
+                transition: all 0.3s;
+                position: relative;
+            }
+
+                .sidebar-menu li a:hover,
+                .sidebar-menu li a.active {
+                    background-color: rgba(255, 255, 255, 0.1);
+                    color: white;
+                    border-left: 4px solid #3498db;
+                }
+
+                .sidebar-menu li a i {
+                    width: 30px;
+                    font-size: 1.2rem;
+                    flex-shrink: 0;
+                }
+
+        .sidebar.collapsed .sidebar-menu li a span {
+            display: none;
+        }
+
+        .main-content-admin {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            transition: all 0.3s;
+            background-color: #f8f9fc;
+        }
+
+        .sidebar.collapsed ~ .main-content-admin {
+            margin-left: 80px;
+            width: calc(100% - 80px);
+        }
+
+        .admin-header {
+            background: white;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .toggle-sidebar {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #5a5c69;
+            transition: color 0.3s;
+        }
+
+            .toggle-sidebar:hover {
+                color: #3498db;
+            }
+
+        /* Cards */
+        .stat-card {
+            border-left: 4px solid #3498db;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+            }
+
+            .stat-card.success {
+                border-left-color: #1cc88a;
+            }
+
+            .stat-card.warning {
+                border-left-color: #f6c23e;
+            }
+
+            .stat-card.danger {
+                border-left-color: #e74a3b;
+            }
+
+            .stat-card.info {
+                border-left-color: #36b9cc;
+            }
+
+        /* Scrollbar for sidebar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+            .sidebar::-webkit-scrollbar-thumb:hover {
+                background: rgba(255, 255, 255, 0.5);
+            }
+
+        /* User info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #f8f9fc;
+            border-radius: 0.5rem;
+        }
+
+            .user-info i {
+                font-size: 1.5rem;
+                color: #3498db;
+            }
+
+        @@media (max-width: 768px) {
+            .sidebar {
+                margin-left: -260px;
+            }
+
+                .sidebar.show {
+                    margin-left: 0;
+                }
+
+            .main-content-admin {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .sidebar.collapsed ~ .main-content-admin {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .admin-header h4 {
+                font-size: 1.1rem;
+            }
+
+            .user-info span {
+                display: none;
+            }
+        }
+    </style>
+
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-icon">
+                    <i class="fas fa-warehouse"></i>
+                </div>
+                <span>Admin Panel</span>
+            </div>
+
+            <ul class="sidebar-menu mt-4">
+                <li>
+                    <a href="@Url.Action("Index", "Admin")" class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("SanPham", "Admin")">
+                        <i class="fas fa-box-open"></i>
+                        <span>Quản lý Sản phẩm</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("DanhMuc", "Admin")">
+                        <i class="fas fa-th-large"></i>
+                        <span>Danh mục</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("NhaCungCap", "Admin")">
+                        <i class="fas fa-truck"></i>
+                        <span>Nhà cung cấp</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("NhapHang", "Admin")">
+                        <i class="fas fa-file-import"></i>
+                        <span>Nhập hàng</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("DonHang", "Admin")">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Đơn hàng</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("NguoiDung", "Admin")">
+                        <i class="fas fa-users"></i>
+                        <span>Người dùng</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("BaoCaoDoanhThu", "Report")">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Báo cáo Doanh thu</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("BaoCaoTonKho", "Report")">
+                        <i class="fas fa-warehouse"></i>
+                        <span>Báo cáo Tồn kho</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("SanPhamBanChay", "Report")">
+                        <i class="fas fa-fire"></i>
+                        <span>Sản phẩm bán chạy</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("AuditLog", "Admin")">
+                        <i class="fas fa-history"></i>
+                        <span>Lịch sử hoạt động</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("SaoLuu", "Admin")">
+                        <i class="fas fa-database"></i>
+                        <span>Sao lưu dữ liệu</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Home")">
+                        <i class="fas fa-home"></i>
+                        <span>Về trang chủ</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content-admin">
+            <!-- Header -->
+            <div class="admin-header">
+                <div class="d-flex align-items-center">
+                    <span class="toggle-sidebar me-3" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </span>
+                    <h4 class="mb-0">@ViewBag.Title</h4>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span>@Session["UserName"]</span>
+                    </div>
+                    <a href="@Url.Action("Logout", "Account")" class="btn btn-sm btn-outline-danger">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="container-fluid p-4">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <i class="fas fa-check-circle"></i> @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @if (TempData["Warning"] != null)
+                {
+                    <div class="alert alert-warning alert-dismissible fade show">
+                        <i class="fas fa-exclamation-triangle"></i> @TempData["Warning"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @if (TempData["Info"] != null)
+                {
+                    <div class="alert alert-info alert-dismissible fade show">
+                        <i class="fas fa-info-circle"></i> @TempData["Info"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        // Mobile sidebar toggle
+        if (window.innerWidth < 768) {
+            document.querySelector('.toggle-sidebar').onclick = function () {
+                document.getElementById('sidebar').classList.toggle('show');
+            };
+        }
+
+        // Auto hide alerts
+        setTimeout(function () {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+
+        // Active menu highlighting
+        var currentPath = window.location.pathname;
+        $('.sidebar-menu a').each(function () {
+            if ($(this).attr('href') === currentPath) {
+                $(this).addClass('active');
+            }
+        });
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

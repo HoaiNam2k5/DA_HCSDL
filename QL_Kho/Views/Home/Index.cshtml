@@ -1,0 +1,360 @@
+﻿@model IEnumerable<QL_Kho.Models.SANPHAM>
+
+@{
+    ViewBag.Title = "Trang chủ";
+}
+
+<!-- Hero Banner -->
+<section class="hero-section">
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="hero-overlay"></div>
+                <img src="~/Content/images/banners/iphone-banner.jpg" class="d-block w-100" alt="Banner 1"
+                     onerror="this.src='https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=1200&h=400&fit=crop'">
+                <div class="carousel-caption">
+                    <div class="hero-content">
+                        <span class="hero-badge">Hot Deal</span>
+                        <h1 class="hero-title">iPhone 15 Pro Max</h1>
+                        <p class="hero-subtitle">Giảm giá đến 20% - Số lượng có hạn</p>
+                        <a href="@Url.Action("DanhMuc", "Home", new { id = "DM001" })" class="btn-hero">
+                            Mua ngay
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="hero-overlay"></div>
+                <img src="~/Content/images/banners/samsung-banner.jpg" class="d-block w-100" alt="Banner 2"
+                     onerror="this.src='https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=1200&h=400&fit=crop'">
+                <div class="carousel-caption">
+                    <div class="hero-content">
+                        <span class="hero-badge">New Arrival</span>
+                        <h1 class="hero-title">Samsung Galaxy S24</h1>
+                        <p class="hero-subtitle">Công nghệ AI tiên tiến nhất</p>
+                        <a href="@Url.Action("DanhMuc", "Home", new { id = "DM002" })" class="btn-hero">
+                            Khám phá
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="hero-overlay"></div>
+                <img src="~/Content/images/banners/xiaomi-banner.jpg" class="d-block w-100" alt="Banner 3"
+                     onerror="this.src='https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=1200&h=400&fit=crop'">
+                <div class="carousel-caption">
+                    <div class="hero-content">
+                        <span class="hero-badge">Best Price</span>
+                        <h1 class="hero-title">Xiaomi 14 Ultra</h1>
+                        <p class="hero-subtitle">Camera chuyên nghiệp - Giá tốt nhất</p>
+                        <a href="@Url.Action("DanhMuc", "Home", new { id = "DM005" })" class="btn-hero">
+                            Xem ngay
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="title-icon">
+                    <i class="fas fa-th-large"></i>
+                </span>
+                Danh mục sản phẩm
+            </h2>
+            <p class="section-subtitle">Khám phá các danh mục sản phẩm của chúng tôi</p>
+        </div>
+        <div class="categories-grid">
+            @foreach (var dm in (ViewBag.DanhMuc as List<QL_Kho.Models.DANHMUC>) ?? new List<QL_Kho.Models.DANHMUC>())
+            {
+                <a href="@Url.Action("DanhMuc", "Home", new { id = dm.MaDM.Trim() })" class="category-card">
+                    <div class="category-icon">
+                        @switch (dm.MaDM.Trim())
+                        {
+                            case "DM001":
+                                <i class="fab fa-apple"></i>
+                                break;
+                            case "DM002":
+                                <i class="fab fa-android"></i>
+                                break;
+                            case "DM003":
+                                <i class="fas fa-mobile-alt"></i>
+                                break;
+                            case "DM004":
+                                <i class="fas fa-mobile-screen-button"></i>
+                                break;
+                            case "DM005":
+                                <i class="fas fa-mobile"></i>
+                                break;
+                            default:
+                                <i class="fas fa-mobile-alt"></i>
+                                break;
+                        }
+                    </div>
+                    <h6 class="category-name">@dm.TenDM</h6>
+                    <div class="category-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="products-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div>
+                    <h2 class="section-title">
+                        <span class="title-icon">
+                            <i class="fas fa-fire"></i>
+                        </span>
+                        Sản phẩm mới nhất
+                    </h2>
+                    <p class="section-subtitle">Cập nhật liên tục các sản phẩm mới nhất</p>
+                </div>
+                <a href="@Url.Action("SanPham", "Home")" class="btn-view-all">
+                    Xem tất cả
+                    <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="products-grid">
+                @foreach (var item in Model)
+                {
+                    <div class="product-card">
+                        <!-- Product Image -->
+                        <div class="product-image-wrapper">
+                            <a href="@Url.Action("ChiTiet", "Home", new { id = item.MaSP.Trim() })">
+                                @if (!string.IsNullOrEmpty(item.HinhAnh))
+                                {
+                                    <img src="~/Content/images/@item.HinhAnh" class="product-image" alt="@item.TenSP"
+                                         onerror="this.src='https://via.placeholder.com/300x300/667eea/ffffff?text=No+Image'">
+                                }
+                                else
+                                {
+                                    <img src="https://via.placeholder.com/300x300/667eea/ffffff?text=@item.TenSP" class="product-image" alt="@item.TenSP">
+                                }
+                            </a>
+
+                            <!-- Product Badge -->
+                            @if (item.SoLuongTon <= 10)
+                            {
+                                <span class="product-badge badge-danger">
+                                    <i class="fas fa-exclamation-circle"></i> Sắp hết
+                                </span>
+                            }
+                            else if (item.SoLuongTon > 50)
+                            {
+                                <span class="product-badge badge-success">
+                                    <i class="fas fa-check-circle"></i> Còn nhiều
+                                </span>
+                            }
+
+                            <!-- Quick View -->
+                        <div class="product-overlay">
+                            <a href="@Url.Action("ChiTiet", "Home", new { id = item.MaSP.Trim() })" class="btn btn-info">
+                                <i class="fa fa-eye"></i>
+                            </a>
+
+                        </div>
+                        </div>
+
+                        <!-- Product Info -->
+                        <div class="product-info">
+                            <h6 class="product-name">
+                                <a href="@Url.Action("ChiTiet","Home", new { id = item.MaSP.Trim() })">
+                                    @item.TenSP
+                                </a>
+                            </h6>
+
+                            <!-- Price & Stock -->
+                            <div class="product-meta">
+                                <div class="product-price">
+                                    @string.Format("{0:N0}", item.DonGia)đ
+                                </div>
+                                <div class="product-stock">
+                                    <i class="fas fa-box"></i>
+                                    <span>@item.SoLuongTon</span>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="product-actions">
+                                @if (item.SoLuongTon > 0)
+                                {
+                                    <button onclick="addToCart('@item.MaSP')" class="btn-add-cart">
+                                        <i class="fas fa-cart-plus"></i>
+                                        <span>Thêm vào giỏ</span>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn-out-of-stock" disabled>
+                                        <i class="fas fa-ban"></i>
+                                        <span>Hết hàng</span>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <h3>Chưa có sản phẩm</h3>
+                <p>Hiện tại chưa có sản phẩm nào. Vui lòng quay lại sau!</p>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon icon-primary">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <div class="feature-content">
+                    <h5 class="feature-title">Giao hàng nhanh</h5>
+                    <p class="feature-text">Miễn phí vận chuyển cho đơn hàng trên 1 triệu</p>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon icon-success">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="feature-content">
+                    <h5 class="feature-title">Bảo hành chính hãng</h5>
+                    <p class="feature-text">Bảo hành 12 tháng từ nhà sản xuất</p>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon icon-warning">
+                    <i class="fas fa-undo-alt"></i>
+                </div>
+                <div class="feature-content">
+                    <h5 class="feature-title">Đổi trả dễ dàng</h5>
+                    <p class="feature-text">Đổi trả trong 7 ngày nếu có lỗi</p>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon icon-info">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div class="feature-content">
+                    <h5 class="feature-title">Hỗ trợ 24/7</h5>
+                    <p class="feature-text">Tư vấn nhiệt tình, chuyên nghiệp</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section styles {
+    <link href="~/Content/Home.css" rel="stylesheet" />
+    <link href="~/Content/css/home.css" rel="stylesheet" />
+}
+
+@section scripts {
+    <script>
+        function addToCart(maSP) {
+            @if (Session["UserID"] == null)
+            {
+                <text>
+                if (confirm('Bạn cần đăng nhập để thêm vào giỏ hàng. Chuyển đến trang đăng nhập?')) {
+                    window.location.href = '@Url.Action("Login", "Account")';
+                }
+                return;
+                </text>
+            }
+
+            $.ajax({
+                url: '@Url.Action("AddToCart", "Cart")',
+                type: 'POST',
+                data: { maSP: maSP, soLuong: 1 },
+                success: function (response) {
+                    if (response.success) {
+                        $('.badge-notification').text(response.cartCount);
+                        showToast('Đã thêm vào giỏ hàng!', 'success');
+                    } else {
+                        showToast(response.message, 'error');
+                    }
+                },
+                error: function () {
+                    showToast('Có lỗi xảy ra. Vui lòng thử lại!', 'error');
+                }
+            });
+        }
+
+        function showToast(message, type) {
+            const colors = {
+                success: { bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', icon: 'fa-check-circle' },
+                error: { bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', icon: 'fa-exclamation-circle' }
+            };
+
+            const config = colors[type];
+
+            const toast = $(`
+                <div class="toast-notification">
+                    <div class="toast-icon">
+                        <i class="fas ${config.icon}"></i>
+                    </div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `);
+
+            toast.css('background', config.bg);
+            $('body').append(toast);
+
+            setTimeout(() => toast.addClass('show'), 100);
+            setTimeout(() => {
+                toast.removeClass('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Smooth scroll animation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,401 @@
+﻿@model QL_Kho.ViewModels.DashboardViewModel
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-tachometer-alt text-primary"></i> Dashboard
+    </h1>
+    <div>
+        <button class="btn btn-sm btn-primary shadow-sm" onclick="location.reload()">
+            <i class="fas fa-sync-alt fa-sm"></i> Làm mới
+        </button>
+        <a href="#" class="btn btn-sm btn-success shadow-sm">
+            <i class="fas fa-download fa-sm"></i> Xuất báo cáo
+        </a>
+    </div>
+</div>
+
+<!-- Stats Cards Row -->
+<div class="row g-3 mb-4">
+    <!-- Đơn hàng chờ xác nhận -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card warning shadow h-100">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Chờ xác nhận
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.DonHangChoXacNhan</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clock fa-2x text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Đơn hàng đang giao -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card primary shadow h-100">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Đang giao hàng
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.DonHangDangGiao</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-truck fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Đơn hàng hoàn thành -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card success shadow h-100">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Hoàn thành
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.DonHangHoanThanh</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tổng đơn hàng -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card stat-card info shadow h-100">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Tổng đơn hàng
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TongDonHang</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-shopping-cart fa-2x text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Cards Row -->
+<div class="row g-3 mb-4">
+    <!-- Doanh thu hôm nay -->
+    <div class="col-xl-4 col-md-6">
+        <div class="card shadow h-100" style="border-left: 4px solid #1cc88a;">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Doanh thu hôm nay
+                        </div>
+                        <div class="h4 mb-0 font-weight-bold text-success">
+                            @string.Format("{0:N0}đ", Model.DoanhThuHomNay)
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar-day fa-2x text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doanh thu tháng này -->
+    <div class="col-xl-4 col-md-6">
+        <div class="card shadow h-100" style="border-left: 4px solid #36b9cc;">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Doanh thu tháng này
+                        </div>
+                        <div class="h4 mb-0 font-weight-bold text-info">
+                            @string.Format("{0:N0}đ", Model.DoanhThuThangNay)
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar-alt fa-2x text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doanh thu năm nay -->
+    <div class="col-xl-4 col-md-6">
+        <div class="card shadow h-100" style="border-left: 4px solid #667eea;">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Doanh thu năm nay
+                        </div>
+                        <div class="h4 mb-0 font-weight-bold text-primary">
+                            @string.Format("{0:N0}đ", Model.DoanhThuNamNay)
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Products & Users Stats -->
+<div class="row g-3 mb-4">
+    <!-- Sản phẩm -->
+    <div class="col-lg-6">
+        <div class="card shadow h-100">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-box"></i> Thống kê sản phẩm
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="stat-box">
+                            <i class="fas fa-boxes fa-3x text-primary mb-2"></i>
+                            <h3 class="mb-0">@Model.TongSanPham</h3>
+                            <small class="text-muted">Tổng sản phẩm</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-box">
+                            <i class="fas fa-check-circle fa-3x text-success mb-2"></i>
+                            <h3 class="mb-0">@Model.SanPhamHoatDong</h3>
+                            <small class="text-muted">Đang bán</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-box">
+                            <i class="fas fa-exclamation-triangle fa-3x text-danger mb-2"></i>
+                            <h3 class="mb-0">@Model.SanPhamHetHang</h3>
+                            <small class="text-muted">Hết hàng</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Người dùng -->
+    <div class="col-lg-6">
+        <div class="card shadow h-100">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-users"></i> Thống kê người dùng
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="stat-box">
+                            <i class="fas fa-user-friends fa-3x text-info mb-2"></i>
+                            <h3 class="mb-0">@Model.TongNguoiDung</h3>
+                            <small class="text-muted">Tổng người dùng</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-box">
+                            <i class="fas fa-user-plus fa-3x text-success mb-2"></i>
+                            <h3 class="mb-0">@Model.NguoiDungMoi</h3>
+                            <small class="text-muted">Mới (30 ngày)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Orders & Top Products -->
+<div class="row g-3">
+    <!-- Đơn hàng mới nhất -->
+    <div class="col-lg-7">
+        <div class="card shadow h-100">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-shopping-cart"></i> Đơn hàng mới nhất
+                </h6>
+                <a href="@Url.Action("QuanLyDonHang", "Admin")" class="btn btn-sm btn-primary">
+                    Xem tất cả
+                </a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Mã ĐH</th>
+                                <th>Ngày đặt</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.DonHangMoi != null)
+                            {
+                                foreach (var order in (List<QL_Kho.Models.DONHANG>)ViewBag.DonHangMoi)
+                                {
+                                    <tr>
+                                        <td><strong>@order.MaDH</strong></td>
+                                        <td>@order.NgayDat.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td><strong class="text-success">@string.Format("{0:N0}đ", order.TongTien)</strong></td>
+                                        <td>
+                                            @{
+                                                var badgeClass = "secondary";
+                                                switch (order.TrangThai)
+                                                {
+                                                    case "Chờ xác nhận": badgeClass = "warning"; break;
+                                                    case "Đã xác nhận": badgeClass = "info"; break;
+                                                    case "Đang giao": badgeClass = "primary"; break;
+                                                    case "Đã giao": badgeClass = "success"; break;
+                                                    case "Đã hủy": badgeClass = "danger"; break;
+                                                }
+                                            }
+                                            <span class="badge bg-@badgeClass">@order.TrangThai</span>
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("ChiTietDonHang", "Account", new { id = order.MaDH })" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                                        <p class="mb-0">Chưa có đơn hàng nào</p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sản phẩm bán chạy -->
+    <div class="col-lg-5">
+        <div class="card shadow h-100">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-fire"></i> Top sản phẩm bán chạy
+                </h6>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.SanPhamBanChay != null && ((List<QL_Kho.ViewModels.SanPhamBanChayViewModel>)ViewBag.SanPhamBanChay).Any())
+                {
+                    foreach (var sp in (List<QL_Kho.ViewModels.SanPhamBanChayViewModel>)ViewBag.SanPhamBanChay)
+                    {
+                        <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                            <div class="product-img me-3">
+                                @if (!string.IsNullOrEmpty(sp.HinhAnh))
+                                {
+                                    if (sp.HinhAnh.StartsWith("http"))
+                                    {
+                                        <img src="@sp.HinhAnh" alt="@sp.TenSP" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Content/images/@sp.HinhAnh" alt="@sp.TenSP" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                    }
+                                }
+                                else
+                                {
+                                    <img src="https://via.placeholder.com/60" alt="No image" style="width: 60px; height: 60px; border-radius: 8px;">
+                                }
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">@sp.TenSP</h6>
+                                <small class="text-muted">Đã bán: @sp.SoLuongBan</small>
+                            </div>
+                            <div class="text-end">
+                                <strong class="text-success">@string.Format("{0:N0}đ", sp.DonGia)</strong>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-box-open fa-3x mb-3"></i>
+                        <p class="mb-0">Chưa có dữ liệu</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <style>
+        .stat-box {
+            padding: 1rem;
+            transition: all 0.3s;
+        }
+
+            .stat-box:hover {
+                transform: translateY(-5px);
+            }
+
+        .text-gray-800 {
+            color: #5a5c69 !important;
+        }
+
+        .font-weight-bold {
+            font-weight: 700 !important;
+        }
+
+        .text-xs {
+            font-size: 0.7rem;
+        }
+
+        .product-img img {
+            transition: transform 0.3s;
+        }
+
+        .product-img:hover img {
+            transform: scale(1.1);
+        }
+    </style>
+}
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Auto refresh every 5 minutes
+        setTimeout(function () {
+            location.reload();
+        }, 300000);
+    </script>
+}

@@ -1,0 +1,371 @@
+﻿@using System.Web.Optimization
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Hệ Thống Quản Lý Kho</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom CSS Files -->
+    <link href="~/Content/Site.css" rel="stylesheet">
+    <link href="~/Content/chatbox.css" rel="stylesheet">
+    <link href="~/Content/promo.css" rel="stylesheet">
+
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                <i class="fas fa-warehouse"></i>
+                QL Kho Hàng
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Home")">
+                            <i class="fas fa-home"></i> Trang Chủ
+                        </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-th-large"></i> Danh Mục
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("DanhMuc", "Home", new { id = "DM001" })">
+                                    <i class="fab fa-apple"></i> iPhone
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("DanhMuc", "Home", new { id = "DM002" })">
+                                    <i class="fab fa-android"></i> Samsung
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("DanhMuc", "Home", new { id = "DM003" })">
+                                    <i class="fas fa-mobile-alt"></i> Oppo
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("DanhMuc", "Home", new { id = "DM004" })">
+                                    <i class="fas fa-mobile-alt"></i> Vivo
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("DanhMuc", "Home", new { id = "DM005" })">
+                                    <i class="fas fa-mobile-alt"></i> Xiaomi
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("SanPham", "Home")">
+                            <i class="fas fa-box-open"></i> Sản Phẩm
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("LienHe", "Home")">
+                            <i class="fas fa-phone-alt"></i> Liên Hệ
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="search-bar mx-3 d-none d-lg-block">
+                    <form action="@Url.Action("TimKiem", "Home")" method="get">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm sản phẩm...">
+                    </form>
+                </div>
+
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    @if (Session["UserID"] != null)
+                    {
+                        <li class="nav-item cart-badge">
+                            <a class="nav-link" href="@Url.Action("Index", "Cart")">
+                                <i class="fas fa-shopping-cart fa-lg"></i>
+                                <span class="badge bg-danger badge-notification">
+                                    @(Session["CartCount"] ?? 0)
+                                </span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                <div class="user-avatar">
+                                    @Session["UserName"].ToString().Substring(0, 1).ToUpper()
+                                </div>
+                                <span class="d-none d-md-inline">@Session["UserName"]</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li class="dropdown-header">
+                                    <strong>@Session["UserName"]</strong>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+
+                                @if (Session["UserRole"] != null && (Session["UserRole"].ToString() == "admin" || Session["UserRole"].ToString() == "quanly"))
+                                {
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Admin")">
+                                            <i class="fas fa-tachometer-alt text-primary"></i> Dashboard Admin
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                }
+
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("ThongTinCaNhan", "Account")">
+                                        <i class="fas fa-user"></i> Thông tin cá nhân
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("DonHangCuaToi", "Account")">
+                                        <i class="fas fa-shopping-bag"></i> Đơn hàng của tôi
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="@Url.Action("Logout", "Account")">
+                                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Login", "Account")">
+                                <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn ms-2" href="@Url.Action("Register", "Account")">
+                                <i class="fas fa-user-plus"></i> Đăng ký
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Search -->
+    <div class="container d-lg-none my-3">
+        <form action="@Url.Action("TimKiem", "Home")" method="get">
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm sản phẩm...">
+                <button class="btn btn-primary" type="submit">Tìm</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Alert Messages -->
+    <div class="container mt-3">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <strong>Thành công!</strong> @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <strong>Lỗi!</strong> @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Warning"] != null)
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Cảnh báo!</strong> @TempData["Warning"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Info"] != null)
+        {
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="fas fa-info-circle"></i>
+                <strong>Thông tin!</strong> @TempData["Info"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        @RenderBody()
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5><i class="fas fa-warehouse"></i> QL Kho Hàng</h5>
+                    <p class="mt-3">
+                        Hệ thống quản lý kho hàng điện tử chuyên nghiệp.
+                        Cung cấp các sản phẩm điện thoại chính hãng với giá tốt nhất.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h5>Liên Kết</h5>
+                    <ul class="list-unstyled mt-3">
+                        <li class="mb-2"><a href="@Url.Action("Index", "Home")"><i class="fas fa-angle-right"></i> Trang chủ</a></li>
+                        <li class="mb-2"><a href="@Url.Action("SanPham", "Home")"><i class="fas fa-angle-right"></i> Sản phẩm</a></li>
+                        <li class="mb-2"><a href="@Url.Action("LienHe", "Home")"><i class="fas fa-angle-right"></i> Liên hệ</a></li>
+                        <li class="mb-2"><a href="#"><i class="fas fa-angle-right"></i> Chính sách bảo mật</a></li>
+                        <li class="mb-2"><a href="#"><i class="fas fa-angle-right"></i> Điều khoản sử dụng</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h5>Liên Hệ</h5>
+                    <ul class="list-unstyled mt-3">
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt"></i>
+                            123 Đường ABC, Q. 1, TP. HCM
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone"></i>
+                            <a href="tel:0909123456">0909 123 456</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:info@qlkho.com">info@qlkho.com</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-clock"></i>
+                            8:00 - 22:00 (Hàng ngày)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr style="border-color: rgba(255, 255, 255, 0.2);">
+
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">
+                        &copy; @DateTime.Now.Year <strong>QL Kho Hàng</strong>. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chatbox -->
+    <div class="chat-button" onclick="toggleChat()">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+        <div class="chat-header">
+            <div>
+                <h5><i class="fas fa-headset"></i> Hỗ trợ trực tuyến</h5>
+                <small>Chúng tôi luôn sẵn sàng hỗ trợ bạn</small>
+            </div>
+            <button class="chat-close" onclick="toggleChat()">&times;</button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-message bot">
+                <div class="message-bubble">
+                    Xin chào! 👋 Tôi có thể giúp gì cho bạn?
+                </div>
+            </div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." onkeypress="handleChatEnter(event)">
+            <button onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Promo Popup -->
+    <div class="promo-overlay" id="promoOverlay" onclick="closePromo()"></div>
+    <div class="promo-popup" id="promoPopup">
+        <div class="promo-header">
+            <button class="promo-close" onclick="closePromo()">&times;</button>
+            <h3>🎉 KHUYẾN MÃI ĐẶC BIỆT 🎉</h3>
+            <p>Chỉ hôm nay!</p>
+        </div>
+        <div class="promo-body">
+            <div class="promo-badge">GIẢM 30%</div>
+            <h4>Tất cả sản phẩm iPhone</h4>
+            <p class="text-muted">Áp dụng cho đơn hàng từ 10 triệu</p>
+
+            <div class="promo-timer">
+                <p><strong>Ưu đãi kết thúc sau:</strong></p>
+                <div class="timer-display">
+                    <div>
+                        <span id="hours">00</span>
+                        <small>Giờ</small>
+                    </div>
+                    <div>:</div>
+                    <div>
+                        <span id="minutes">00</span>
+                        <small>Phút</small>
+                    </div>
+                    <div>:</div>
+                    <div>
+                        <span id="seconds">00</span>
+                        <small>Giây</small>
+                    </div>
+                </div>
+            </div>
+
+            <a href="@Url.Action("DanhMuc", "Home", new { id = "DM001" })" class="btn btn-lg btn-danger w-100">
+                <i class="fas fa-shopping-cart"></i> Mua Ngay
+            </a>
+        </div>
+    </div>
+
+    <!-- Floating Discount Badge -->
+    <div class="floating-discount" onclick="showPromo()">
+        <h6>🔥 HOT SALE</h6>
+        <span class="discount-percent">-30%</span>
+        <small>Click xem ngay!</small>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="~/Scripts/site.js"></script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

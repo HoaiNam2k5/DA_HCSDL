@@ -1,0 +1,132 @@
+﻿@model QL_Kho.Models.NGUOIDUNG
+
+@{
+    ViewBag.Title = "Thông tin cá nhân";
+}
+
+<div class="container-fluid bg-light py-3 mb-4">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")"><i class="fas fa-home"></i> Trang chủ</a></li>
+                <li class="breadcrumb-item active"><i class="fas fa-user"></i> Thông tin cá nhân</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="user-info text-center mb-4">
+                        <div class="user-avatar mb-3">
+                            <i class="fas fa-user-circle fa-5x text-primary"></i>
+                        </div>
+                        <h5 class="mb-1">@Model.TenNguoiDung</h5>
+                        <small class="text-muted">@Model.Email</small>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="@Url.Action(" ThongTinCaNhan", "Account" )" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-user"></i> Thông tin cá nhân
+                        </a>
+                        <a href="@Url.Action(" DonHangCuaToi", "Account" )" class="list-group-item list-group-item-action">
+                            <i class="fas fa-list"></i> Đơn hàng của tôi
+                        </a>
+                        <a href="@Url.Action("DoiMatKhau", "Account")" class="list-group-item list-group-item-action">
+                            <i class="fas fa-key"></i> Đổi mật khẩu
+                        </a>
+                        <a href="@Url.Action("Logout", "Account")" class="list-group-item list-group-item-action text-danger">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="col-lg-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-gradient text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-edit"></i> Thông tin cá nhân
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <i class="fas fa-check-circle"></i> @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form method="post" action="@Url.Action("ThongTinCaNhan", "Account")">
+                        @Html.AntiForgeryToken()
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Mã khách hàng</label>
+                                <input type="text" class="form-control" value="@Model.MaUser" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" value="@Model.Email" readonly>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="tenNguoiDung" value="@Model.TenNguoiDung" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" name="sdt" value="@Model.SDT" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Vai trò</label>
+                                <input type="text" class="form-control" value="@Model.Role" readonly>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Địa chỉ</label>
+                                <textarea class="form-control" name="diaChi" rows="3">@Model.DiaChi</textarea>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Cập nhật
+                            </button>
+                            <a href="@Url.Action(" Index", "Home" )" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <style>
+        .bg-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .list-group-item.active {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+    </style>
+}
