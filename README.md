@@ -71,7 +71,7 @@ QL_Kho là một hệ thống quản lý kho hàng điện tử chuyên nghiệp
 ## 💻 Yêu Cầu Hệ Thống
 
 ### Phần Mềm
-- **Visual Studio 2019** trở lên (khuyến nghị 2022)
+- **Visual Studio 2022** (phiên bản 17.0 trở lên)
 - **SQL Server 2019** trở lên
 - **.NET Framework 4.8**
 - **IIS Express** hoặc **IIS**
@@ -106,7 +106,7 @@ cd DA_HCSDL
 ```xml
 <connectionStrings>
     <add name="Model1" 
-         connectionString="Data Source=YOUR_SERVER;Initial Catalog=DT_DB;Integrated Security=True" 
+         connectionString="data source=YOUR_SERVER;initial catalog=DT_DB;user id=YOUR_USER;password=YOUR_PASSWORD;TrustServerCertificate=True;MultipleActiveResultSets=True;App=EntityFramework" 
          providerName="System.Data.SqlClient" />
 </connectionStrings>
 ```
@@ -214,21 +214,22 @@ DA_HCSDL/
 ## 🗄 Cơ Sở Dữ Liệu
 
 ### Các Bảng Chính
-| Bảng | Mô tả |
-|------|-------|
-| NGUOIDUNG | Thông tin người dùng |
-| SANPHAM | Thông tin sản phẩm |
-| DANHMUC | Danh mục sản phẩm |
-| NHACUNGCAP | Thông tin nhà cung cấp |
-| GIOHANG | Giỏ hàng của khách |
-| DONHANG | Đơn đặt hàng |
-| CHITIETDONHANG | Chi tiết đơn hàng |
-| HOADON | Hóa đơn bán hàng |
-| CTHOADON | Chi tiết hóa đơn |
-| HOADONNHAPHANG | Hóa đơn nhập hàng |
-| PHIEUNHAP | Phiếu nhập kho |
-| AUDITLOG | Nhật ký thay đổi |
-| BACKUP_HISTORY | Lịch sử backup |
+
+| Bảng             | Mô tả                     |
+|------------------|---------------------------|
+| NGUOIDUNG        | Thông tin người dùng      |
+| SANPHAM          | Thông tin sản phẩm        |
+| DANHMUC          | Danh mục sản phẩm         |
+| NHACUNGCAP       | Thông tin nhà cung cấp    |
+| GIOHANG          | Giỏ hàng của khách        |
+| DONHANG          | Đơn đặt hàng              |
+| CHITIETDONHANG   | Chi tiết đơn hàng         |
+| HOADON           | Hóa đơn bán hàng          |
+| CTHOADON         | Chi tiết hóa đơn          |
+| HOADONNHAPHANG   | Hóa đơn nhập hàng         |
+| PHIEUNHAP        | Phiếu nhập kho            |
+| AUDITLOG         | Nhật ký thay đổi          |
+| BACKUP_HISTORY   | Lịch sử backup            |
 
 ### Stored Procedures
 - `proc_create_user`: Tạo tài khoản mới
